@@ -1,0 +1,4 @@
+data/pending-input.txt
+data/summaries.tsv
+*.pyc
+__pycache__/
