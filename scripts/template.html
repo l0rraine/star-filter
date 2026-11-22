@@ -47,12 +47,6 @@ mark{background:#fff1a8;color:inherit;padding:0 1px;border-radius:2px}
 .empty{background:#fff;border:1px dashed #d8dce3;border-radius:11px;padding:26px 18px;
  text-align:center;color:#6b7280;font-size:13.5px;line-height:1.8}
 .empty b{color:#111827}
-#menu{position:fixed;z-index:99;background:#fff;border:1px solid var(--line);border-radius:9px;
- box-shadow:0 8px 24px rgba(16,24,40,.16);padding:5px;display:none;min-width:196px;font-size:13px}
-#menu div{padding:7px 10px;border-radius:6px;cursor:pointer;color:#374151;white-space:nowrap}
-#menu div:hover{background:#f2f4f8}
-#menu .sep{height:1px;background:var(--line);margin:4px 6px;padding:0;cursor:default}
-#menu .sep:hover{background:var(--line)}
 
 </style>
 </head>
@@ -70,7 +64,6 @@ mark{background:#fff1a8;color:inherit;padding:0 1px;border-radius:2px}
   <div class="meta" id="meta"></div>
   <div id="list"></div>
 </div>
-<div id="menu"></div>
 <script>
 const DATA = __DATA__;
 const F=0,NAME=1,OWNER=2,SUM=3,TAGS=4,ALI=5,DESC=6,TOPICS=7,LANG=8,STARS=9,PUSHED=10,STATUS=11,LINK=12,CAT=13,PEND=14;
@@ -251,56 +244,7 @@ document.getElementById('clr').onclick=()=>{
   document.getElementById('q').value=''; document.getElementById('clr').style.display='none'; render();
 };
 
-buildChips(); render();
-
-/* ---------- 新建搜索 / 右键菜单 / URL 直链 ---------- */
-const qEl=document.getElementById('q');
-const menuEl=document.getElementById('menu');
-
-function searchURL(word){
-  const u=new URL(location.href);
-  u.search=''; u.hash='';
-  if(word) u.searchParams.set('q',word);
-  return u.toString();
-}
-function openNewSearch(word){
-  window.open(searchURL(word),'_blank','noopener');
-}
-function hideMenu(){ menuEl.style.display='none'; }
-
-function showMenu(x,y,items){
-  menuEl.innerHTML='';
-  items.forEach(it=>{
-    const d=document.createElement('div');
-    if(it.sep){ d.className='sep'; menuEl.appendChild(d); return; }
-    d.textContent=it.label;
-    d.onclick=ev=>{ ev.stopPropagation(); hideMenu(); it.fn(); };
-    menuEl.appendChild(d);
-  });
-  menuEl.style.display='block';
-  const w=menuEl.offsetWidth,h=menuEl.offsetHeight;
-  menuEl.style.left=Math.min(x,window.innerWidth-w-8)+'px';
-  menuEl.style.top=Math.min(y,window.innerHeight-h-8)+'px';
-}
-
-qEl.addEventListener('contextmenu',e=>{
-  e.preventDefault(); e.stopPropagation();
-  const sel=(window.getSelection?window.getSelection().toString():'').trim();
-  const items=[{label:'新建搜索（新标签页）',fn:()=>openNewSearch(qEl.value.trim())}];
-  if(sel) items.push({label:'用「'+(sel.length>14?sel.slice(0,14)+'…':sel)+'」新建搜索',fn:()=>openNewSearch(sel)});
-  items.push({sep:true});
-  items.push({label:'复制输入框内容',fn:()=>{
-    try{ navigator.clipboard.writeText(qEl.value); }catch(err){}
-  }});
-  items.push({label:'清空',fn:()=>{ qEl.value=''; document.getElementById('clr').style.display='none'; syncURL(''); render(); }});
-  showMenu(e.clientX,e.clientY,items);
-});
-
-document.addEventListener('click',hideMenu);
-document.addEventListener('scroll',hideMenu,true);
-window.addEventListener('resize',hideMenu);
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') hideMenu(); });
-
+/* ---------- URL 直达：?q= 或 #关键词 打开即搜 ---------- */
 function syncURL(q){
   try{
     const u=new URL(location.href);
@@ -310,8 +254,7 @@ function syncURL(q){
   }catch(err){}
 }
 
-// 打开时若带 ?q= 或 #q=，直接进入该关键词的检索结果
-(function initFromURL(){
+(function seedFromURL(){
   let seed='';
   try{
     seed=new URLSearchParams(location.search).get('q')||'';
@@ -319,11 +262,13 @@ function syncURL(q){
   }catch(err){}
   seed=(seed||'').trim();
   if(seed){
-    qEl.value=seed;
+    document.getElementById('q').value=seed;
     document.getElementById('clr').style.display='block';
-    render();
   }
 })();
+
+buildChips(); render();
+
 
 </script>
 </body>
