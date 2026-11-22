@@ -183,9 +183,9 @@ function render(){
   const list=document.getElementById('list');
   const meta=document.getElementById('meta');
   if(empty){
-    list.innerHTML='<div class="empty">没找到。<b>多半是库里用的词和你说的不一样</b><br>'+
-      '比如你搜「人声分离」，库里写的是「音轨分离」——把新词补成别名，下次就能中。<br>'+
-      '<span style="color:#9ca3af">换个说法试试，或点上面的分类缩小范围再搜。</span></div>';
+    list.innerHTML='<div class="empty"><b>已按「'+esc(q.trim())+'」搜索，0 条命中。</b><br>'+
+      '多半是库里用的词和你说的不一样——比如你搜「人声分离」，库里写的是「音轨分离」，把新词补成别名下次就能中。<br>'+
+      '<span style="color:#9ca3af">换个说法，或点上面的分类缩小范围再搜。</span></div>';
     meta.textContent='0 条';
     return;
   }
