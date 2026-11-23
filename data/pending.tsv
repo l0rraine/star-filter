@@ -1,1 +1,2 @@
 full_name	description	topics	language	url
+Koimsurai/Arke	A fast, beautiful file explorer for Windows that never makes you wait. Built with Rust and GPUI.	file-explorer,file-manager,gpui,rust,windows,windows-11	Rust	https://github.com/Koimsurai/Arke
